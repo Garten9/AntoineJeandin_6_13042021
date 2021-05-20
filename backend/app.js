@@ -4,10 +4,12 @@ const mongoose = require('mongoose');
 const Sauce = require('./models/sauce');
 const Utilisateur = require('./models/utilisateur');
 const sauceRoutes = require('./routes/sauces');
+const utilisateurRoutes = require('./routes/utilisateur');
+const path = require('path');
 
 const app = express();
 
-mongoose.connect('mongodb+srv://admin:admin@bddsopepeckocko.aak5o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://edit:edit@bddsopepeckocko.aak5o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -27,6 +29,8 @@ app.use(bodyParser.json());
 // permet d'extraire les données json
 app.use(express.json());
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/sauces', sauceRoutes);
+app.use('/api/auth', utilisateurRoutes);
 
 module.exports = app;
