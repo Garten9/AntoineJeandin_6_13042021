@@ -6,9 +6,10 @@ const Utilisateur = require('./models/utilisateur');
 const sauceRoutes = require('./routes/sauces');
 const utilisateurRoutes = require('./routes/utilisateur');
 const path = require('path');
+const helmet = require('helmet');
 
 const app = express();
-
+app.use(helmet.xssFilter());
 mongoose.connect('mongodb+srv://edit:edit@bddsopepeckocko.aak5o.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
   {
     useNewUrlParser: true,

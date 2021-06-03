@@ -2,12 +2,25 @@ const Utilisateur = require('../models/utilisateur');
 const bcrypt = require('bcrypt');
 const utilisateur = require('../models/utilisateur');
 const jwt = require('jsonwebtoken');
+var mongoMask = require('mongo-mask')
+
+function escapeHtml(text) {
+    var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+
+    return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+}
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const utilisateur = new Utilisateur({
-                email: req.body.email,
+                email: escapeHtml(req.body.email),
                 password: hash
             });
             utilisateur.userId = utilisateur._id;
@@ -19,7 +32,8 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-    utilisateur.findOne({ email: req.body.email })
+    const fields = mongoMask('password,userId');
+    utilisateur.findOne({ email: req.body.email }, fields)
         .then(utilisateur => {
             if (!utilisateur) {
                 return res.status(401).json({ error: 'Utilisateur non trouvé !' });
